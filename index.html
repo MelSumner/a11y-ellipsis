@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Truncation Component</title><link rel="preload" href="assets/woff2/0-MonoLisaText-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="style.css"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Truncation Component</title><link rel="preload" href="assets/woff2/0-MonoLisaText-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="assets/monolisa-webfont.css"><link rel="stylesheet" href="style.css"></head><body>
 
 
 
@@ -10,7 +10,7 @@
     <h1>Truncation Component</h1>
     <p class="subtitle">Solving accessible text truncation</p>
   </hgroup>
-  <p class="byline">By Melanie and Joseph Temple</p>
+  <p class="byline">By <a href="https://github.com/melsumner">Melanie Sumner Temple</a> &amp; <a href="https://github.com/josephdsumner">Joseph Temple</a></p>
 </header>
 
 <nav class="toc" aria-label="Contents">
@@ -188,7 +188,7 @@
 
 <section id="component" aria-labelledby="h-component">
   <span class="sec-n">4 · THE COMPONENT</span>
-  <h2 id="h-component">The markup the CSS swaps between</h2>
+  <h2 id="h-component">The markup for each state</h2>
   <p class="prose"><code>&lt;Truncation&gt;</code> is a template-only component that takes one argument, <code>@text</code>. It renders the value twice. The plain copy is real text that screen readers read while it fits. The overflow copy is <code>aria-hidden</code>, so while the value is trimmed, the full value reaches assistive technology through the button's <code>aria-label</code> and its tooltip instead. The hidden plain copy is <code>visibility: hidden</code>, which takes it out of the accessibility tree, so the value is never read twice.</p>
   <figure class="code"><figcaption><span>components/truncation/index.gts (complete)</span><span class="path">ui-kit · components/truncation/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-variable constant_">TOC</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/component/template-only'</span>;
 <span class="hljs-keyword">import</span> { hash } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/helper'</span>;
@@ -400,7 +400,7 @@
     <li>The trigger must be focusable and must not be natively disabled; otherwise a development assert fires.</li>
     <li>The tooltip mounts beside its trigger.</li>
     <li>It is positioned with Popper's <code>fixed</code> strategy, so table cells and scroll containers can't clip it.</li>
-    <li>Escape dismisses it.</li>
+    <li><kbd>Esc</kbd> dismisses it.</li>
     <li>A host's tooltip is <code>aria-hidden</code>, because it only repeats the host's own text.</li>
   </ul>
   <figure class="code"><figcaption><span>utils/dom/tooltips.ts: applyTooltip</span><span class="path">ui-kit · utils/dom/tooltips.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">applyTooltip</span>(<span class="hljs-params">element: TooltipTrigger, opts: TooltipOpts | <span class="hljs-literal">undefined</span></span>): (<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>) | <span class="hljs-literal">undefined</span> {
@@ -485,7 +485,7 @@
 
 <section id="reason" aria-labelledby="h-reason">
   <span class="sec-n">6 · LOCKED HOSTS</span>
-  <h2 id="h-reason">A reachable disabled control that says why</h2>
+  <h2 id="h-reason">Disabled controls that stay reachable and explain why</h2>
   <p class="prose">A locked control stays focusable: it uses <code>aria-disabled</code>, not <code>disabled</code>, so its tooltip is still reachable from the keyboard. <code>reason</code> is read when the tooltip shows, so locking and unlocking need no re-attach. When the value is clipped too, <code>formatReason</code> joins the two as "value: reason", using a translated separator.</p>
   <figure class="code"><figcaption><span>account-menu/index.ts: the locked user menu's tooltip</span><span class="path">app · components/account-menu/index.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-comment">// Only a menu that would have options can be locked, so only then is there a reason.</span>
 <span class="hljs-keyword">get</span> <span class="hljs-title function_">userMenuLockedReason</span>() {
@@ -762,7 +762,7 @@ export const ItemsSummary: TemplateOnlyComponent<span class="hljs-tag">&lt;<span
     <figure class="code"><figcaption><span>ui-kit test-support/helpers/settle-truncation.ts</span><span class="path">ui-kit · test-support/helpers/settle-truncation.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> { settled } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/test-helpers'</span>;
 
 <span class="hljs-comment">// A Truncation's overflow state comes from a scroll timeline, which the browser resolves on the</span>
-<span class="hljs-comment">// next animation frame — after `settled()` has already returned.</span>
+<span class="hljs-comment">// next animation frame, after `settled()` has already returned.</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">settleTruncation</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
   <span class="hljs-keyword">await</span> <span class="hljs-title function_">settled</span>();
   <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt;(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> <span class="hljs-title function_">requestAnimationFrame</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">requestAnimationFrame</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">resolve</span>())));

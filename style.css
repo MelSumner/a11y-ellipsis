@@ -101,3 +101,8 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mermaid-diagram .mmd-light{display:none}:root:not([data-theme="light"]) .mermaid-diagram .mmd-dark{display:block}}
 :root[data-theme="dark"] .mermaid-diagram .mmd-light{display:none}
 :root[data-theme="dark"] .mermaid-diagram .mmd-dark{display:block}
+
+/* Marks the parts of the implementation that lean on tippy.js, and the parts that are plain DOM. */
+.pill.lib{background:var(--state-soft);color:var(--state)}
+.code figcaption .pill{align-self:center}
+table.flv.wrap td:first-child{white-space:normal;min-inline-size:14ch}

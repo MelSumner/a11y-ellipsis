@@ -16,7 +16,7 @@
 <nav class="toc" aria-label="Contents">
   <ol class="toc__list">
     <li><a href="#arch">Architecture</a></li>
-    <li><a href="#flavors">Flavors</a></li>
+    <li><a href="#variations">Variations</a></li>
     <li><a href="#css">The CSS</a></li>
     <li><a href="#component">The component</a></li>
     <li><a href="#host">The modifier and Reveal Hosts</a></li>
@@ -34,8 +34,8 @@
 </section>
 
 <section id="arch" aria-labelledby="h-arch">
-  <span class="sec-n">1 · ARCHITECTURE</span>
-  <h2 id="h-arch">Three layers, two ways to reveal</h2>
+  <h2 id="h-arch">1 · Architecture</h2>
+  <h3>Three layers, two ways to reveal</h3>
   <p class="prose">Throughout, <code>ui-kit-styles</code> stands for your stylesheet package, <code>ui-kit</code> for your component library, and <code>app</code> for any site that uses them. The examples are Ember (Glimmer templates, modifiers) with tippy.js for tooltips, but the CSS technique works with any framework. The code samples in this document are illustrative, not drop-in: adapt the names, imports and tooltip library to your own stack.</p>
   <p class="prose">ui-kit-styles owns the overflow decision. ui-kit owns two primitives: the <code>&lt;Truncation&gt;</code> component, for plain text, and the <code>truncationHost</code> modifier, for elements that are already interactive. Both rely on <code>applyTooltip</code>, the shared tippy wrapper. The app never measures anything itself. It picks a primitive per value, in the template that renders it.</p>
   <figure class="diagram">
@@ -44,12 +44,12 @@
   </figure>
 </section>
 
-<section id="flavors" aria-labelledby="h-flavors">
-  <span class="sec-n">2 · FLAVORS</span>
-  <h2 id="h-flavors">Variations and how they are applied</h2>
-  <p class="prose">The rule is decided by what the value is, not by where it sits. Plain text gets a Reveal Button. An element that already takes focus becomes a Reveal Host, because a button nested inside a link or a select trigger would be a nested interactive element. Everything below is one of these two forms, or a variant of one of them.</p>
+<section id="variations" aria-labelledby="h-variations">
+  <h2 id="h-variations">2 · Variations</h2>
+  <h3>Variations and how they are applied</h3>
+  <p class="prose">The rule is decided by what the value is, not by where it sits. Plain text gets a Reveal Button. An element that already takes focus becomes a Reveal Host, because a button nested inside a link or a select trigger would be a nested interactive element. Every variation below is one of these two, or builds on one of them.</p>
   <div class="tbl"><table class="flv">
-    <thead><tr><th>Flavor</th><th>Form</th><th>When it applies</th><th>How it reveals</th><th>Where it lives</th></tr></thead>
+    <thead><tr><th>Variation</th><th>Built with</th><th>When it applies</th><th>How it reveals</th><th>Where it lives</th></tr></thead>
     <tbody>
       <tr><td>Reveal Button</td><td><span class="pill btn">component</span></td><td>Non-interactive text: names, emails, file names, titles</td><td>A trimmed, faded copy plus a ⋯ button whose accessible name and tooltip are the full value</td><td><code>&lt;Truncation @text&gt;</code></td></tr>
       <tr><td>Reveal Host</td><td><span class="pill host">modifier</span></td><td>A link, a select trigger, a menu button or a file input whose own text clips</td><td>A native ellipsis; the element's own tooltip shows the full value, only while it is clipped</td><td><code>{{truncationHost text}}</code> + <code>.c-truncation-host</code></td></tr>
@@ -63,8 +63,8 @@
 </section>
 
 <section id="css" aria-labelledby="h-css">
-  <span class="sec-n">3 · THE CSS</span>
-  <h2 id="h-css">The overflow probe, the keyframe and the style query</h2>
+  <h2 id="h-css">3 · The CSS</h2>
+  <h3>The overflow probe, the keyframe and the style query</h3>
   <p class="prose">The trick is that an <code>overflow: hidden</code> box is a scroll container, and a scroll timeline is only <em>active</em> while its container has something to scroll. <code>.c-truncation__plain</code> is that box. It names its timeline <code>--c-truncation</code>, and <code>timeline-scope</code> on the wrapper hoists the name, so the wrapper's own animation can bind to it.</p>
   <ol class="steps">
     <li>While the text fits, the timeline is inactive, so the animation applies nothing. <code>--c-truncation-overflowing</code> stays unset, and the plain text shows.</li>
@@ -187,8 +187,8 @@
 </section>
 
 <section id="component" aria-labelledby="h-component">
-  <span class="sec-n">4 · THE COMPONENT</span>
-  <h2 id="h-component">The markup for each state</h2>
+  <h2 id="h-component">4 · The component</h2>
+  <h3>The markup for each state</h3>
   <p class="prose"><code>&lt;Truncation&gt;</code> is a template-only component that takes one argument, <code>@text</code>. It renders the value twice. The plain copy is real text that screen readers read while it fits. The overflow copy is <code>aria-hidden</code>, so while the value is trimmed, the full value reaches assistive technology through the button's <code>aria-label</code> and its tooltip instead. The hidden plain copy is <code>visibility: hidden</code>, which takes it out of the accessibility tree, so the value is never read twice.</p>
   <figure class="code"><figcaption><span>components/truncation/index.gts (complete)</span><span class="path">ui-kit · components/truncation/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-variable constant_">TOC</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/component/template-only'</span>;
 <span class="hljs-keyword">import</span> { hash } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/helper'</span>;
@@ -231,8 +231,8 @@
 </section>
 
 <section id="host" aria-labelledby="h-host">
-  <span class="sec-n">5 · THE MODIFIER AND REVEAL HOSTS</span>
-  <h2 id="h-host">An interactive element reveals its own text</h2>
+  <h2 id="h-host">5 · The modifier and Reveal Hosts</h2>
+  <h3>An interactive element reveals its own text</h3>
   <p class="prose">A link or a select trigger can't hold a Reveal Button, because that would be a control inside a control. It keeps a native ellipsis (<code>.c-truncation-host</code>), and the element itself carries the tooltip. The modifier is a thin call to <code>applyTooltip</code> with <code>showWhen: 'overflowing'</code>.</p>
   <figure class="code"><figcaption><span>modifiers/truncation-host.ts (complete)</span><span class="path">ui-kit · modifiers/truncation-host.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> { modifier } <span class="hljs-keyword">from</span> <span class="hljs-string">'ember-modifier'</span>;
 <span class="hljs-keyword">import</span> { applyTooltip, revealHostContent } <span class="hljs-keyword">from</span> <span class="hljs-string">'ui-kit/utils/dom/tooltips'</span>;
@@ -484,8 +484,8 @@
 </section>
 
 <section id="reason" aria-labelledby="h-reason">
-  <span class="sec-n">6 · LOCKED HOSTS</span>
-  <h2 id="h-reason">Disabled controls that stay reachable and explain why</h2>
+  <h2 id="h-reason">6 · Locked hosts</h2>
+  <h3>Disabled controls that stay reachable and explain why</h3>
   <p class="prose">A locked control stays focusable: it uses <code>aria-disabled</code>, not <code>disabled</code>, so its tooltip is still reachable from the keyboard. <code>reason</code> is read when the tooltip shows, so locking and unlocking need no re-attach. When the value is clipped too, <code>formatReason</code> joins the two as "value: reason", using a translated separator.</p>
   <figure class="code"><figcaption><span>account-menu/index.ts: the locked user menu's tooltip</span><span class="path">app · components/account-menu/index.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-comment">// Only a menu that would have options can be locked, so only then is there a reason.</span>
 <span class="hljs-keyword">get</span> <span class="hljs-title function_">userMenuLockedReason</span>() {
@@ -604,10 +604,10 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
 </section>
 
 <section id="consumers" aria-labelledby="h-consumers">
-  <span class="sec-n">7 · CONSUMERS</span>
-  <h2 id="h-consumers">How an app picks a form</h2>
+  <h2 id="h-consumers">7 · Consumers</h2>
+  <h3>How an app picks a variation</h3>
   <p class="prose">An app never measures anything. It picks a primitive per value, in the template that renders it. The examples below are common places where a long value meets a narrow box.</p>
-  <h3>Table cells: text and links</h3>
+  <h4>Table cells: text and links</h4>
   <p class="prose">A text cell wraps its value in a <code>&lt;Truncation&gt;</code>. A cell whose value is a link makes the link a Reveal Host instead; when the link stacks several lines, each line is its own clip.</p>
   <figure class="code"><figcaption><span>Text cell</span><span class="path">app · components/table/cells/text/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">const</span> <span class="hljs-title class_">TextCell</span>: <span class="hljs-variable constant_">TOC</span>&lt;<span class="hljs-title class_">Signature</span>&gt; = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">TableCellsBase</span>
@@ -642,8 +642,8 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
     &lt;/<span class="hljs-title class_">Link</span>&gt;
   {{/<span class="hljs-keyword">if</span>}}
 &lt;/<span class="hljs-title class_">TableCellsBase</span>&gt;</code></pre></figure>
-  <h3>Link or text, per row</h3>
-  <p class="prose">The same value can be a link in one row and plain text in another, for example when the user can't open that record. The form follows the element: a Reveal Host when it links, a Reveal Button when it doesn't. An identifier that sits next to its name stays whole; only the name truncates.</p>
+  <h4>Link or text, per row</h4>
+  <p class="prose">The same value can be a link in one row and plain text in another, for example when the user can't open that record. The variation follows the element: a Reveal Host when it links, a Reveal Button when it doesn't. An identifier that sits next to its name stays whole; only the name truncates.</p>
   <figure class="code"><figcaption><span>Name cell: link or text</span><span class="path">app · components/table/cells/name/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">const</span> <span class="hljs-title class_">NameCell</span>: <span class="hljs-variable constant_">TOC</span>&lt;{ <span class="hljs-title class_">Args</span>: { <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; href?: <span class="hljs-built_in">string</span> } }&gt; = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
   {{#if @href}}
     <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation-host'</span> <span class="hljs-attr">href</span>=<span class="hljs-string">{{@href}}</span> {{<span class="hljs-attr">truncationHost</span> @<span class="hljs-attr">name</span>}}&gt;</span>{{@name}}<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
@@ -653,7 +653,7 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
 <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">NameCell</span>;</code></pre></figure>
-  <h3>Inside a link or not: two forms for one value</h3>
+  <h4>Inside a link or not: two variations for one value</h4>
   <figure class="code"><figcaption><span>ui-kit table/cells/item-group-info: clip or reveal</span><span class="path">ui-kit · components/table/cells/item-group-info/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">type</span> <span class="hljs-title class_">NameForm</span> = <span class="hljs-string">'clip'</span> | <span class="hljs-string">'reveal'</span>;
 
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">LINK_CLASSES</span> =
@@ -679,14 +679,14 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
     {{/if}}
   {{/if}}
 <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>;</code></pre></figure>
-  <figure class="code"><figcaption><span>…and how the form is chosen</span><span class="path">ui-kit · components/table/cells/item-group-info/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">get</span> <span class="hljs-title function_">titleForm</span>(): <span class="hljs-title class_">NameForm</span> {
+  <figure class="code"><figcaption><span>…and how the variation is chosen</span><span class="path">ui-kit · components/table/cells/item-group-info/index.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">get</span> <span class="hljs-title function_">titleForm</span>(): <span class="hljs-title class_">NameForm</span> {
   <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">args</span>.<span class="hljs-property">insideLink</span> ? <span class="hljs-string">'clip'</span> : <span class="hljs-string">'reveal'</span>;
 }
 
 <span class="hljs-keyword">get</span> <span class="hljs-title function_">detailsForm</span>(): <span class="hljs-title class_">NameForm</span> {
   <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">args</span>.<span class="hljs-property">insideLink</span> || <span class="hljs-variable language_">this</span>.<span class="hljs-property">showLink</span> ? <span class="hljs-string">'clip'</span> : <span class="hljs-string">'reveal'</span>;
 }</code></pre></figure>
-  <h3>Reusing the parts</h3>
+  <h4>Reusing the parts</h4>
   <p class="prose">A cell that stands for several values reuses the Reveal Button's classes for a button that is always present, because there are always more values to list. A label that puts a name inside a sentence splits its translated copy around a placeholder character. That way the name can sit on its own line with a <code>&lt;Truncation&gt;</code>, in any language's word order.</p>
   <figure class="code"><figcaption><span>items-summary: an always-on Reveal Button for a group of values</span><span class="path">app · components/items-summary/index.gts</span></figcaption><pre><code class="language-handlebars hljs"><span class="language-xml">// A group's Reveal Button is always there: it lists every item, and it stands in for the
 // ellipsis when the first item's name is trimmed.
@@ -755,8 +755,8 @@ export const ItemsSummary: TemplateOnlyComponent<span class="hljs-tag">&lt;<span
 </section>
 
 <section id="tests" aria-labelledby="h-tests">
-  <span class="sec-n">8 · TESTING</span>
-  <h2 id="h-tests">Waiting for the timeline, and asserting the state</h2>
+  <h2 id="h-tests">8 · Testing</h2>
+  <h3>Waiting for the timeline, and asserting the state</h3>
   <p class="prose">The scroll timeline resolves on the animation frame after <code>settled()</code> has returned, so tests await two more frames. The plain copy stays laid out (zero height, hidden) while overflowing, so <code>isVisible</code> can't tell the states apart. The page object asks whether the Reveal Button renders any box instead. Ember's test container is scaled down (to 50% by default), so tests assert states and relative measurements, never absolute pixel widths.</p>
   <div class="two">
     <figure class="code"><figcaption><span>ui-kit test-support/helpers/settle-truncation.ts</span><span class="path">ui-kit · test-support/helpers/settle-truncation.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> { settled } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/test-helpers'</span>;
@@ -799,9 +799,9 @@ export const ItemsSummary: TemplateOnlyComponent<span class="hljs-tag">&lt;<span
 </section>
 
 <section id="rules" aria-labelledby="h-rules">
-  <span class="sec-n">9 · RULES</span>
-  <h2 id="h-rules">Rules that keep it correct</h2>
-  <ul class="list">
+  <h2 id="h-rules">9 · Rules</h2>
+  <h3>Rules that keep it correct</h3>
+  <ol class="list">
     <li><b>Pick the variation by the element, not the place.</b> Plain text gets <code>&lt;Truncation&gt;</code>; a link, trigger, menu button or input gets <code>{{truncationHost}}</code>. Never put a Reveal Button inside a link or button.</li>
     <li><b>Tooltip triggers are focusable.</b> Attach tooltips to interactive elements only. A locked control uses <code>aria-disabled</code>, never <code>disabled</code>; <code>applyTooltip</code> asserts this in development.</li>
     <li><b>One tooltip per trigger.</b> A second source only swaps content, with a warning. Give a host its reason through <code>reason</code>; don't add a second tooltip.</li>
@@ -814,7 +814,7 @@ export const ItemsSummary: TemplateOnlyComponent<span class="hljs-tag">&lt;<span
     <li><b>An open cell lifts while its tooltip is open.</b> A table cell holding an open tooltip lifts above its neighbours and a sticky header, so their shadows can't erase its border. While scrolled under the header, it paints over the header until the tooltip closes; that is an accepted trade-off.</li>
     <li><b>Rows act only through their Row Controls.</b> A table row takes no click of its own: its Expand Toggle expands it and its Open Trigger opens it, each named from the row header's value. So a Reveal Button is never nested in an interactive row, and expandable rows use the same cells as flat rows.</li>
     <li><b>Multi-part hosts mark their clips.</b> Put <code>data-truncation-clip</code> on each part that can clip, and let <code>revealHostContent</code> build one row per line.</li>
-  </ul>
+  </ol>
   <div class="callout">Screen readers announce a Reveal Button's value twice: once as its name, once through tippy's <code>aria-describedby</code>. This is an accepted trade-off. A Reveal Host's tooltip is <code>aria-hidden</code>, because the host's accessible name is already the full text.</div>
 </section>
 

@@ -1,7 +1,7 @@
 /* ------------ Design-system tokens the documented CSS refers to ------------ */
 :root {
   --color-accent-200: color-mix(in srgb, var(--accent) 22%, var(--panel));
-  /* 70% keeps 3:1 against the panel and under the ⋯ dots, in both colour schemes. */
+  /* 70% keeps 3:1 against the panel and under the ⋯ dots, in both color schemes. */
   --color-accent-300: color-mix(in srgb, var(--accent) 70%, var(--panel));
   --color-accent-500: var(--accent);
   --color-text: var(--ink);

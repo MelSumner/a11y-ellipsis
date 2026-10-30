@@ -184,7 +184,7 @@
 
     if (existingTooltip && options.content) {
       warn(
-        "A plain tooltip and a Reveal Host tooltip were both attached to the same trigger; only the first one's behaviour applies.",
+        "A plain tooltip and a Reveal Host tooltip were both attached to the same trigger; only the first one's behavior applies.",
         isRevealHost(existingTooltip) === (options.showWhen === 'overflowing'),
         { id: 'my-design-system.tooltip-second-source' },
       );
@@ -386,7 +386,7 @@
     });
   }
 
-  // Shared keyboard behaviour for the select's listbox and the profile chip's menu.
+  // Shared keyboard behavior for the select's listbox and the profile chip's menu.
   function setupPopup(root, { trigger, popup, items, onOpen, onChoose, focusItems }) {
     let active = 0;
 

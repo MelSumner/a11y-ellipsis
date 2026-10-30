@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .bg { fill: #1c5d9e; }
+    .dot { fill: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #78afe6; }
+      .dot { fill: #0e141b; }
+    }
+  </style>
+  <rect class="bg" width="32" height="32" rx="7"/>
+  <circle class="dot" cx="8" cy="16" r="3"/>
+  <circle class="dot" cx="16" cy="16" r="3"/>
+  <circle class="dot" cx="24" cy="16" r="3"/>
+</svg>

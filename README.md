@@ -1,8 +1,14 @@
 # a11y-ellipsis
 
-Notes on an approach to accessible text truncation.
+Truncated text is typically not available to the keyboard only user who does not use a screen reader.
 
-Open `index.html` in a browser to read.
+This exploration hopes to resolve that.
+
+Open https://melsumner.github.io/a11y-ellipsis/ in a browser to read the full approach.
+
+The /examples page shows live demos of the solution that you can try out for yourself and see how it works.
+
+Feedback is _incredibly_ welcome. Please open an issue if you find any issues or want to provide feedback.
 
 ## License
 

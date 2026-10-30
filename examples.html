@@ -71,7 +71,7 @@
 
 <section id="position" aria-labelledby="h-position">
   <h2 id="h-position">Truncation position</h2>
-  <p class="prose">In a breadcrumb trail shown as a value, such as a location column, the last crumb is usually the part that matters. <code>@position="start"</code> keeps the end of the trail visible, and <code>@position="middle"</code> keeps where it starts and the whole last crumb, as in <code>/src/compon…/Menu.module.css</code>. The ⋯ button sits where the cut is. Its accessible name and tooltip are still the full trail. A breadcrumb <code>&lt;nav&gt;</code> made of links is different: each link is its own Reveal Host, which can cut at the start too (see <a href="#shared-link">Shared link</a>). See <a href="index.html#component">The component</a>.</p>
+  <p class="prose">In a breadcrumb trail shown as a value, such as a location column, the last crumb is usually the part that matters. <code>@position="start"</code> keeps the end of the trail visible, and <code>@position="middle"</code> keeps the whole last crumb and as much of the start as fits, so a path reads like <code>/src/compon…/Menu.module.css</code>. The ⋯ button sits where the cut is. Its accessible name and tooltip are still the full trail. A breadcrumb <code>&lt;nav&gt;</code> made of links is different: each link is its own Reveal Host, which can cut at the start too (see <a href="#shared-link">Shared link</a>). See <a href="index.html#component">The component</a>.</p>
   <div class="demo">
     <div class="demo__width"><label for="w-position">Truncation position frame width</label><input id="w-position" type="range" min="10" max="100" value="40" data-demo-width><output for="w-position" data-demo-width-output></output></div>
     <div class="demo__frame">
@@ -131,7 +131,7 @@
 
 <section id="file-upload" aria-labelledby="h-file-upload">
   <h2 id="h-file-upload">File upload</h2>
-  <p class="prose">The visually hidden input takes focus, so it hosts the tooltip. The file name it reveals sits in its label. A long file name is preselected; choose another file to replace it. Following Rule 9, the tooltip mounts beside the label rather than inside it.</p>
+  <p class="prose">The visually hidden input takes focus, so it hosts the tooltip. The file name it reveals sits in its label. A long file name is preselected; choose another file to replace it. As <a href="index.html#rules">the rules</a> require, the tooltip mounts beside the label rather than inside it.</p>
   <div class="demo">
     <div class="demo__width"><label for="w-file-upload">File upload frame width</label><input id="w-file-upload" type="range" min="10" max="100" value="50" data-demo-width><output for="w-file-upload" data-demo-width-output></output></div>
     <div class="demo__frame">
@@ -296,7 +296,7 @@
 
 <section id="name-label" aria-labelledby="h-name-label">
   <h2 id="h-name-label">Name label with translated copy</h2>
-  <p class="prose">The translated sentence is split around a placeholder character, so the name can truncate wherever the language puts it: at the start, in the middle, or at the end.</p>
+  <p class="prose">The translated sentence is split around a placeholder character, so the name can truncate wherever the language places it in the sentence: first, mid-sentence, or last. That placement is separate from <code>@position</code>, which picks where the value itself is cut.</p>
   <div class="demo">
     <div class="demo__controls">
       <label for="name-label-locale">Language</label>

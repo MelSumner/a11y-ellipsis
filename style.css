@@ -55,14 +55,17 @@ header{display:flex;flex-direction:column;gap:14px;max-width:1040px;margin:0 aut
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{font-family:var(--mono);font-size:.75rem;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink-2)}
 .chip b{color:var(--ink);font-weight:500}
-nav.toc{max-width:1040px;margin:0 auto 56px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px}
-.toc__list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
-.toc__list li{display:flex;align-items:center;gap:2px}
-/* Empty alt text keeps screen readers from announcing "vertical bar". */
-.toc__list li+li::before{content:"|";content:"|" / "";color:var(--muted);margin-inline:6px}
-.toc__list a{display:block;padding:6px 8px;border-radius:6px;font-size:.75rem;color:var(--ink-2);text-decoration:none;white-space:nowrap}
-.toc__list a:hover{background:var(--accent-soft);color:var(--ink);text-decoration:underline}
-.toc__list a:focus-visible{outline:2px solid var(--accent);outline-offset:0;color:var(--ink)}
+/* Negative margins cancel the body's inline padding so the bar spans the viewport. */
+nav.toc{--nav-bg:#03264a;--nav-bg-hover:#0b3d70;--nav-line:#3f6a96;--nav-ink:#ffffff;--nav-highlight:#ffcc00;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 56px calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px);background:var(--nav-bg)}
+/* The list's background shows through the 1px gaps as dividers between items and rows. */
+.toc__list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:1px;background:var(--nav-line)}
+.toc__list li{flex:1 1 auto;display:flex;background:var(--nav-bg)}
+.toc__list a{flex:1;display:block;padding:12px 16px;font-size:.875rem;color:var(--nav-ink);text-align:center;text-decoration:none;white-space:nowrap}
+.toc__list a:hover,.toc__list a:focus-visible{background:var(--nav-bg-hover);text-decoration:underline;text-decoration-color:var(--nav-highlight);text-decoration-thickness:3px;text-underline-offset:6px}
+.toc__list a:focus-visible{outline:3px solid var(--nav-highlight);outline-offset:-3px}
+/* A dark navy can't reach 3:1 against the near-black dark ground, so its edges carry the contrast. */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) nav.toc{border-block:1px solid var(--muted)}}
+:root[data-theme="dark"] nav.toc{border-block:1px solid var(--muted)}
 section{display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
 .diagram{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
 .diagram pre.mermaid{margin:0;background:transparent;display:flex;justify-content:center;min-width:640px}

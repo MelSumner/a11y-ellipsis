@@ -10,13 +10,14 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Truncation Component: Solving accessible text truncation. A truncated file name followed by a reveal button.">
 <meta property="og:locale" content="en_US">
-<link rel="preload" href="assets/woff2/0-MonoLisaText-normal.woff2" as="font" type="font/woff2" crossorigin=""><link rel="stylesheet" href="assets/monolisa-webfont.css"><link rel="stylesheet" href="style.css"></head><body>
+<link rel="preload" href="assets/woff2/0-MonoLisaText-normal.woff2" as="font" type="font/woff2" crossorigin=""><link rel="stylesheet" href="assets/monolisa-webfont.css"><link rel="stylesheet" href="style.css"><script src="theme.js"></script></head><body>
 
 <header>
   <hgroup>
     <h1>Truncation Component</h1>
     <p class="subtitle">Solving accessible text truncation</p>
   </hgroup>
+  <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">Dark mode<span class="theme-toggle__track" aria-hidden="true"></span></button>
   <p class="byline">By <a href="https://github.com/melsumner">Melanie Sumner Temple</a> &amp; <a href="https://github.com/josephdsumner">Joseph Temple</a></p>
 </header>
 
@@ -851,7 +852,7 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
   <div class="callout">Screen readers announce a Reveal Button's value twice: once as its name, once through tippy's <code>aria-describedby</code>. This is an accepted trade-off; a library that lets you skip the description avoids it. A Reveal Host's tooltip is <code>aria-hidden</code>, because the host's accessible name is already the full text.</div>
 </section>
 
-<footer>Package names, paths, and example values are placeholders: <code>my-design-system</code> is your design system, <code>my-app</code> any app that uses it. The diagrams were rendered to SVG with Mermaid and the page runs no scripts. Feedback is welcome: if you find a problem, please <a href="https://github.com/MelSumner/a11y-ellipsis/issues">open an issue on GitHub</a>.</footer>
+<footer>Package names, paths, and example values are placeholders: <code>my-design-system</code> is your design system, <code>my-app</code> any app that uses it. The diagrams were rendered to SVG with Mermaid, and the only script on the page is the light/dark mode toggle. Feedback is welcome: if you find a problem, please <a href="https://github.com/MelSumner/a11y-ellipsis/issues">open an issue on GitHub</a>.</footer>
 </main>
 
 </body></html>

@@ -55,8 +55,8 @@ header{display:flex;flex-direction:column;gap:14px;max-width:1040px;margin:0 aut
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{font-family:var(--mono);font-size:.75rem;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink-2)}
 .chip b{color:var(--ink);font-weight:500}
-/* Negative margins cancel the body's inline padding so the bar spans the viewport. */
-nav.toc{--nav-bg:#03264a;--nav-bg-hover:#0b3d70;--nav-line:#3f6a96;--nav-ink:#ffffff;--nav-highlight:#ffcc00;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 56px calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px);background:var(--nav-bg)}
+/* Bleeds past the body's inline padding on narrow screens; caps at main's 1040px on wide ones. */
+nav.toc{--nav-bg:#03264a;--nav-bg-hover:#0b3d70;--nav-line:#3f6a96;--nav-ink:#ffffff;--nav-highlight:#ffcc00;margin:0 max(calc(-1 * max(16px,env(safe-area-inset-right,0px))),calc((100% - 1040px) / 2)) 56px max(calc(-1 * max(16px,env(safe-area-inset-left,0px))),calc((100% - 1040px) / 2));padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px);background:var(--nav-bg)}
 /* The list's background shows through the 1px gaps as dividers between items and rows. */
 .toc__list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:1px;background:var(--nav-line)}
 .toc__list li{flex:1 1 auto;display:flex;background:var(--nav-bg)}

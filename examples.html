@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Examples · Truncation Component</title>
+<link rel="preload" href="assets/woff2/0-MonoLisaText-normal.woff2" as="font" type="font/woff2" crossorigin="">
+<link rel="stylesheet" href="assets/monolisa-webfont.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="examples.css">
+</head>
+<body>
+
+<header>
+  <hgroup>
+    <h1>Truncation Component: Examples</h1>
+    <p class="subtitle">Live versions of the code samples in the <a href="index.html">documentation</a></p>
+  </hgroup>
+  <p class="lede">Each example sits in a frame you can resize, either by dragging its lower corner or with its width slider. Hover over or focus a truncated value to see the full text. These are plain HTML and JavaScript ports of the Ember code, using tippy.js for tooltips.</p>
+</header>
+
+<nav class="toc" aria-label="Examples">
+  <ol class="toc__list">
+    <li><a href="index.html">Back to the documentation</a></li>
+    <li><a href="#reveal-button">Reveal Button</a></li>
+    <li><a href="#link-host">Link</a></li>
+    <li><a href="#icon-button">Button with an icon</a></li>
+    <li><a href="#file-upload">File upload</a></li>
+    <li><a href="#select">Select trigger</a></li>
+    <li><a href="#menu">Menu button</a></li>
+    <li><a href="#locked">Locked host</a></li>
+    <li><a href="#tables">Table cells</a></li>
+    <li><a href="#title-with-id">Title with identifier</a></li>
+    <li><a href="#items-summary">Grouped values</a></li>
+    <li><a href="#name-label">Name label</a></li>
+    <li><a href="#fallback">Fallback</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<section id="reveal-button" aria-labelledby="h-reveal-button">
+  <h2 id="h-reveal-button">Reveal Button</h2>
+  <p class="prose">Plain text that doesn't fit shows a faded copy and a ⋯ button. The button's accessible name and its tooltip are the full value. See <a href="index.html#component">The component</a>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-reveal-button">Reveal Button frame width</label><input id="w-reveal-button" type="range" min="10" max="100" value="40" data-demo-width><output for="w-reveal-button" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <span data-truncation>Evangeline Blackmore-Castellanos</span>
+      <span data-truncation>evangeline.blackmore-castellanos@example.com</span>
+      <span data-truncation>quarterly-planning-notes-with-appendices-final.docx</span>
+      <span data-truncation>A Surprisingly Long Title for a Short Document</span>
+      <span data-truncation>Short</span>
+    </div>
+  </div>
+</section>
+
+<section id="link-host" aria-labelledby="h-link-host">
+  <h2 id="h-link-host">Link</h2>
+  <p class="prose">The link itself is the clip. It keeps the browser's own ellipsis and shows its tooltip only while its text is clipped. See <a href="index.html#hosts">Reveal Hosts</a>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-link-host">Link frame width</label><input id="w-link-host" type="range" min="10" max="100" value="40" data-demo-width><output for="w-link-host" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <a class="c-truncation-host" href="#link-host" data-truncation-host="Link Host with Overflowing Text">Link Host with Overflowing Text</a>
+    </div>
+  </div>
+</section>
+
+<section id="icon-button" aria-labelledby="h-icon-button">
+  <h2 id="h-icon-button">Button with an icon</h2>
+  <p class="prose">The label span is the clip, marked <code>data-truncation-clip</code>. No text argument is passed, so the tooltip reads the label when it shows. The icon keeps its size with <code>flex-shrink: 0</code>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-icon-button">Button with an icon frame width</label><input id="w-icon-button" type="range" min="10" max="100" value="40" data-demo-width><output for="w-icon-button" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <button type="button" class="c-button c-button--with-icon" data-truncation-host data-demo="icon-button">
+        <svg class="c-button__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 1h2v8l3-3 1.4 1.4L8 12.8 2.6 7.4 4 6l3 3zM2 13h12v2H2z"/></svg>
+        <span class="c-truncation-host" data-truncation-clip>Button Host with an Overflowing Label</span>
+      </button>
+      <p class="demo__note" role="status" data-status></p>
+    </div>
+  </div>
+</section>
+
+<section id="file-upload" aria-labelledby="h-file-upload">
+  <h2 id="h-file-upload">File upload</h2>
+  <p class="prose">The visually hidden input takes focus, so it hosts the tooltip. The file name it reveals sits in its label. A long file name is preselected; choose another file to replace it. Following Rule 9, the tooltip mounts beside the label rather than inside it.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-file-upload">File upload frame width</label><input id="w-file-upload" type="range" min="10" max="100" value="50" data-demo-width><output for="w-file-upload" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <label class="c-file-upload" data-demo="file-upload">
+        <input type="file" class="c-visually-hidden">
+        <span class="c-file-upload__button">Choose file</span>
+        <span class="c-file-upload__name c-truncation-host" data-truncation-clip></span>
+      </label>
+    </div>
+  </div>
+</section>
+
+<section id="select" aria-labelledby="h-select">
+  <h2 id="h-select">Select trigger</h2>
+  <p class="prose">A button-based select. The selected value is the clip, and the button is the host. The tooltip doesn't show while the listbox is open (<code>aria-expanded="true"</code>).</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-select">Select trigger frame width</label><input id="w-select" type="range" min="10" max="100" value="40" data-demo-width><output for="w-select" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <span id="select-label">Project</span>
+      <div class="c-select" data-demo="select">
+        <button type="button" class="c-select__trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-listbox" aria-labelledby="select-label select-value">
+          <span id="select-value" class="c-truncation-host" data-truncation-clip>Infrastructure Modernization Program, Phase Two</span>
+          <svg class="c-select__chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.4 5.6 8 10.2l4.6-4.6L14 7l-6 6-6-6z"/></svg>
+        </button>
+        <ul id="select-listbox" class="c-popup" role="listbox" tabindex="-1" aria-labelledby="select-label" hidden>
+          <li id="select-opt-1" role="option" aria-selected="true">Infrastructure Modernization Program, Phase Two</li>
+          <li id="select-opt-2" role="option" aria-selected="false">Customer Onboarding Experience Research</li>
+          <li id="select-opt-3" role="option" aria-selected="false">Q3 Budget</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="menu" aria-labelledby="h-menu">
+  <h2 id="h-menu">Menu button with two lines</h2>
+  <p class="prose">The wrapper is the clip, and each line inside it is a block. The tooltip shows one row per line, read at the moment it shows.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-menu">Menu button frame width</label><input id="w-menu" type="range" min="10" max="100" value="40" data-demo-width><output for="w-menu" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <div class="c-menu" data-demo="menu">
+        <button type="button" class="c-profile-chip" aria-haspopup="menu" aria-expanded="false" aria-controls="profile-menu">
+          <span class="c-profile-chip__avatar" aria-hidden="true">ML</span>
+          <span class="c-profile-chip__lines" data-truncation-clip>
+            <span class="c-truncation-host">My Long Breakable Display Name</span>
+            <span class="c-truncation-host">my.long.breakable.email.address@example.com</span>
+          </span>
+        </button>
+        <ul id="profile-menu" class="c-popup" role="menu" hidden>
+          <li role="none"><button type="button" class="c-button--reset" role="menuitem" tabindex="-1">Profile</button></li>
+          <li role="none"><button type="button" class="c-button--reset" role="menuitem" tabindex="-1">Settings</button></li>
+          <li role="none"><button type="button" class="c-button--reset" role="menuitem" tabindex="-1">Sign out</button></li>
+        </ul>
+      </div>
+      <p class="demo__note" role="status" data-status></p>
+    </div>
+  </div>
+</section>
+
+<section id="locked" aria-labelledby="h-locked">
+  <h2 id="h-locked">Locked host with a reason</h2>
+  <p class="prose">An optional extension. While locked, the button stays focusable with <code>aria-disabled="true"</code>. Its tooltip shows the reason even when nothing is clipped, and shows "value: reason" when the value is clipped too. See <a href="index.html#reason">Locked hosts</a>.</p>
+  <div class="demo">
+    <div class="demo__controls"><label><input type="checkbox" data-demo="locked-toggle" checked> Lock publishing</label></div>
+    <div class="demo__width"><label for="w-locked">Locked host frame width</label><input id="w-locked" type="range" min="10" max="100" value="60" data-demo-width><output for="w-locked" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <button type="button" class="c-button c-truncation-host" data-demo="locked">Publish My Long Breakable Text</button>
+      <p class="demo__note" role="status" data-status></p>
+    </div>
+  </div>
+</section>
+
+<section id="tables" aria-labelledby="h-tables">
+  <h2 id="h-tables">Table cells</h2>
+  <p class="prose">Text cells use a Reveal Button. Link cells make the link a Reveal Host, with each stacked line as its own clip. The name cell is a link where the record can be opened and plain text where it can't. The last column is a visually hidden copy, so it stays plain text. See <a href="index.html#consumers">Consumers</a>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-tables">Table cells frame width</label><input id="w-tables" type="range" min="10" max="100" value="70" data-demo-width><output for="w-tables" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <table class="c-table">
+        <caption class="c-visually-hidden">Shared documents</caption>
+        <colgroup><col style="inline-size:28%"><col style="inline-size:32%"><col style="inline-size:40%"></colgroup>
+        <thead>
+          <tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Document</th><th scope="col" class="c-visually-hidden">Summary</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="c-table__cell"><a class="c-truncation-host" href="#tables" data-truncation-host="Alexandria Montgomery-Fitzgerald">Alexandria Montgomery-Fitzgerald</a></td>
+            <td class="c-table__cell"><span data-truncation data-test-text>alexandria.montgomery-fitzgerald@example.com</span></td>
+            <td class="c-table__cell">
+              <a class="c-link" href="#tables" data-truncation-host>
+                <span class="c-truncation-host" data-truncation-clip>Quarterly Planning Notes</span>
+                <span class="c-truncation-host" data-truncation-clip>Finance / Planning / 2026 / Third Quarter</span>
+              </a>
+            </td>
+            <td class="c-table__cell c-visually-hidden">Alexandria Montgomery-Fitzgerald shared Quarterly Planning Notes</td>
+          </tr>
+          <tr>
+            <td class="c-table__cell"><span data-truncation>Bartholomew Okonkwo-Lindqvist</span></td>
+            <td class="c-table__cell"><span data-truncation data-test-text>b.okonkwo-lindqvist@example.com</span></td>
+            <td class="c-table__cell">
+              <a class="c-link" href="#tables" data-truncation-host>
+                <span class="c-truncation-host" data-truncation-clip>Customer Onboarding Research Synthesis</span>
+                <span class="c-truncation-host" data-truncation-clip>Research / Onboarding</span>
+              </a>
+            </td>
+            <td class="c-table__cell c-visually-hidden">Bartholomew Okonkwo-Lindqvist shared Customer Onboarding Research Synthesis</td>
+          </tr>
+          <tr>
+            <td class="c-table__cell"><a class="c-truncation-host" href="#tables" data-truncation-host="Chen Wei">Chen Wei</a></td>
+            <td class="c-table__cell"><span data-truncation data-test-text>chen.wei@example.com</span></td>
+            <td class="c-table__cell">
+              <a class="c-link" href="#tables" data-truncation-host>
+                <span class="c-truncation-host" data-truncation-clip>Q3 Budget</span>
+                <span class="c-truncation-host" data-truncation-clip>Finance</span>
+              </a>
+            </td>
+            <td class="c-table__cell c-visually-hidden">Chen Wei shared Q3 Budget</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="title-with-id" aria-labelledby="h-title-with-id">
+  <h2 id="h-title-with-id">Title with identifier</h2>
+  <p class="prose">The identifier always stays whole. Inside a link, the title can only clip, because the link is the host. Outside a link, the title gets its own Reveal Button.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-title-with-id">Title with identifier frame width</label><input id="w-title-with-id" type="range" min="10" max="100" value="45" data-demo-width><output for="w-title-with-id" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <a class="c-title-with-id" href="#title-with-id" data-truncation-host>
+        <span class="c-title-with-id__identifier" data-test-identifier>DOC-4821</span>
+        <span class="c-title-with-id__title c-truncation-host" data-test-title data-truncation-clip>Infrastructure Modernization Program Overview</span>
+      </a>
+      <div class="c-title-with-id">
+        <span class="c-title-with-id__identifier" data-test-identifier>DOC-4822</span>
+        <span data-truncation class="c-title-with-id__title" data-test-title>Infrastructure Modernization Program Overview</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="items-summary" aria-labelledby="h-items-summary">
+  <h2 id="h-items-summary">Grouped values</h2>
+  <p class="prose">A cell that stands for several values always shows the ⋯ button, which lists every value. The first name clips under it. A group with a single item uses a plain <code>&lt;Truncation&gt;</code>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-items-summary">Grouped values frame width</label><input id="w-items-summary" type="range" min="10" max="100" value="40" data-demo-width><output for="w-items-summary" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <div class="c-items-summary" data-test-items-summary>
+        <span class="c-items-summary__name" data-test-items-name>Alexandria Montgomery-Fitzgerald</span>
+        <button type="button" class="c-button--reset c-button--icon-only c-truncation__reveal c-items-summary__reveal" aria-label="Alexandria Montgomery-Fitzgerald, Bartholomew Okonkwo-Lindqvist, Chen Wei, Dagny Sørensen" data-test-items-reveal data-items-reveal>
+          <svg class="c-truncation__reveal-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+        </button>
+        <span class="c-items-summary__count" data-test-items-count>+3</span>
+      </div>
+      <div class="c-items-summary" data-test-items-summary>
+        <span data-truncation data-test-items-name>Cornelius Fairbanks-Ramaswamy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="name-label" aria-labelledby="h-name-label">
+  <h2 id="h-name-label">Name label with translated copy</h2>
+  <p class="prose">The translated sentence is split around a placeholder character, so the name can truncate wherever the language puts it: at the start, in the middle, or at the end.</p>
+  <div class="demo">
+    <div class="demo__controls">
+      <label for="name-label-locale">Language</label>
+      <select id="name-label-locale" data-demo="name-label-locale">
+        <option value="en">English (name first)</option>
+        <option value="de">Deutsch (name in the middle)</option>
+        <option value="ja">日本語 (name last)</option>
+      </select>
+    </div>
+    <div class="demo__width"><label for="w-name-label">Name label frame width</label><input id="w-name-label" type="range" min="10" max="100" value="60" data-demo-width><output for="w-name-label" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <div data-demo="name-label"></div>
+    </div>
+  </div>
+</section>
+
+<section id="fallback" aria-labelledby="h-fallback">
+  <h2 id="h-fallback">No scroll timeline (fallback)</h2>
+  <p class="prose">Without scroll-driven animations, the plain text wraps anywhere, so nothing is lost. Browsers can't turn <code>@supports</code> off on demand, so the frame below is a <em>simulation</em>: it applies the same fallback rules through a class.</p>
+  <p class="callout" data-demo="support"></p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-fallback">Fallback frame width</label><input id="w-fallback" type="range" min="10" max="100" value="30" data-demo-width><output for="w-fallback" data-demo-width-output></output></div>
+    <div class="demo__frame is-simulated-fallback">
+      <span data-truncation>Theodora Montenegro-Vanderlinden</span>
+      <span data-truncation>annual-compliance-review-supporting-records-v3.xlsx</span>
+    </div>
+  </div>
+</section>
+
+<footer>Names, files and addresses are made-up sample values. Tooltips use tippy.js 6.3.7 and Popper 2.11.8, stored in <code>assets/vendor/</code>.</footer>
+</main>
+
+<script src="assets/vendor/popper.min.js"></script>
+<script src="assets/vendor/tippy-bundle.umd.min.js"></script>
+<script src="examples.js"></script>
+</body>
+</html>

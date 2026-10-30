@@ -214,11 +214,6 @@
         opts.showWhen === 'overflowing' ? showAsRevealHost(opts.content, opts.reason, opts.formatReason) : undefined,
     };
 
-    // Unset options keep tippy's defaults rather than overriding them with undefined.
-    for (const key of Object.keys(props)) {
-      if (props[key] === undefined) delete props[key];
-    }
-
     const instance = window.tippy(element, props);
 
     if (opts.showWhen === 'overflowing') instance.popper.setAttribute('aria-hidden', 'true');
@@ -259,7 +254,7 @@
     if (position === 'start') return { head: '', tail: text };
     if (position === 'end') return { head: text, tail: '' };
 
-    // A trailing separator doesn't count, so `/src/` keeps `/src/` rather than `/`.
+    // A trailing separator doesn't count, so `/docs/src/` keeps `/src/` whole rather than splitting off `/`.
     const at = Math.max(...SEPARATORS.map((separator) => text.lastIndexOf(separator, text.length - 2)));
 
     if (at > 0) return { head: text.slice(0, at), tail: text.slice(at), wholeTail: true };
@@ -413,7 +408,7 @@
     showName();
     input.addEventListener('change', showName);
 
-    // Rule 9: mounted beside the label, not inside it, so a click in the tooltip can't reopen the picker.
+    // Mounted beside the label, not inside it (see the rules), so a click in the tooltip can't reopen the picker.
     applyTooltip(input, {
       content: revealHostContent,
       showWhen: 'overflowing',

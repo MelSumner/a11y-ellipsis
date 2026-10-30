@@ -74,7 +74,9 @@
     <thead><tr><th>Variation</th><th>Built with</th><th>When it applies</th><th>How it reveals</th><th>Where it lives</th></tr></thead>
     <tbody>
       <tr><td>Reveal Button</td><td><span class="pill btn">component</span></td><td>Non-interactive text: names, emails, file names, titles</td><td>A trimmed, faded copy plus a ⋯ button whose accessible name and tooltip are the full value</td><td><code>&lt;Truncation @text&gt;</code></td></tr>
+      <tr><td>Cut at the start or middle</td><td><span class="pill btn">component</span></td><td>Concatenated text whose end matters, such as a breadcrumb trail shown as a value</td><td>The same faded copy, clipped at its start or split in two, with the ⋯ button at the cut</td><td><code>&lt;Truncation @text @position&gt;</code></td></tr>
       <tr><td>Reveal Host</td><td><span class="pill host">modifier</span></td><td>A link, a button, a select trigger, a menu button, or a file upload whose own text clips</td><td>A native ellipsis; the element's own tooltip shows the full value, only while it is clipped</td><td><code>{{truncationHost text}}</code> + <code>.c-truncation-host</code></td></tr>
+      <tr><td>Host cut at the start</td><td><span class="pill host">modifier</span></td><td>A link whose end tells it apart: a URL shared in a message, a file link</td><td>A native ellipsis at the start; the tooltip still shows the full value while it is clipped</td><td><code>.c-truncation-host--start</code> with the value in an inner <code>&lt;span&gt;</code></td></tr>
       <tr><td>Multi-clip host</td><td><span class="pill host">modifier</span></td><td>A host with several clipped parts: a name over an email, a link with stacked lines</td><td>No text argument: the tooltip lists one row per clipped line, read when it shows</td><td><code>data-truncation-clip</code> + <code>revealHostContent</code></td></tr>
       <tr><td>Grouped values "…"</td><td><span class="pill btn">button, reused</span></td><td>A cell that stands for several values, shown by the first one's name</td><td>Always shows the ⋯ button, which lists every value; the first name clips under it</td><td>An items-summary cell that reuses <code>.c-truncation__reveal</code></td></tr>
       <tr><td>Locked host with a reason <i>(optional)</i></td><td><span class="pill host">applyTooltip</span></td><td>A control that is <code>aria-disabled</code> but still focusable</td><td>Shows the reason even when nothing is clipped; "value: reason" when it is clipped</td><td><code>reason</code> + <code>formatReason</code></td></tr>
@@ -149,6 +151,40 @@
   <span class="hljs-attribute">text-overflow</span>: clip;
   <span class="hljs-attribute">white-space</span>: nowrap;
 }</code></pre></figure>
+  <figure class="code"><figcaption><span>Where the cut falls: start and middle</span><span class="path">my-design-system · styles/components/_truncation.css</span></figcaption><pre><code class="language-css hljs"><span class="hljs-comment">/* Clips at its start: an end-aligned flex item that is too wide overflows toward the start. */</span>
+<span class="hljs-selector-class">.c-truncation__text--start</span> {
+  <span class="hljs-attribute">display</span>: flex;
+  <span class="hljs-attribute">justify-content</span>: flex-end;
+  <span class="hljs-attribute">mask-image</span>: <span class="hljs-built_in">linear-gradient</span>(to right, transparent, <span class="hljs-number">#000</span> <span class="hljs-number">2.5ch</span>);
+}
+
+<span class="hljs-selector-class">.c-truncation__text--start</span> &gt; <span class="hljs-selector-tag">span</span> {
+  <span class="hljs-attribute">flex</span>: none;
+}
+
+<span class="hljs-comment">/* The last segment stays whole until the head is gone; past that it clips at its start. */</span>
+<span class="hljs-selector-class">.c-truncation__text--whole</span> {
+  <span class="hljs-attribute">flex-shrink</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">mask-image</span>: none;
+  <span class="hljs-attribute">max-inline-size</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100%</span> - <span class="hljs-number">1.375rem</span> - <span class="hljs-built_in">var</span>(--spacing-<span class="hljs-number">3</span>xs) - <span class="hljs-built_in">var</span>(--c-truncation-focus-ring));
+}
+
+<span class="hljs-comment">/* The focus-ring budget follows the Reveal Button to wherever the cut is. */</span>
+<span class="hljs-selector-class">.c-truncation--start</span> <span class="hljs-selector-class">.c-truncation__overflow</span> {
+  <span class="hljs-attribute">padding-inline</span>: <span class="hljs-built_in">var</span>(--c-truncation-focus-ring) <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-class">.c-truncation--middle</span> <span class="hljs-selector-class">.c-truncation__overflow</span> {
+  <span class="hljs-attribute">padding-inline-end</span>: <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-comment">/* A collapsed head still leaves room for the Reveal Button's focus ring. */</span>
+<span class="hljs-selector-class">.c-truncation--middle</span> <span class="hljs-selector-class">.c-truncation__text</span><span class="hljs-selector-pseudo">:first-child</span> {
+  <span class="hljs-attribute">min-inline-size</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-built_in">var</span>(--c-truncation-focus-ring) - <span class="hljs-built_in">var</span>(--spacing-<span class="hljs-number">3</span>xs));
+}</code></pre></figure>
+  <p class="prose">The faded copy has no ellipsis to move, so its start cut uses flex alignment rather than <code>direction</code>. The overflow probe doesn't change: it asks whether the value fits, not where it would be cut.</p>
+  <p class="prose">In the middle position, a value with a separator (<code>/</code>, <code>\</code>, <code>›</code>, or <code>»</code>) keeps its last segment whole: <code>.c-truncation__text--whole</code> doesn't shrink and has no fade, so the head gives up all its space first. Only when the last segment alone can't fit beside the button does it clip at its start, with a hard edge next to the button. A value without a separator splits in half, and both halves fade.</p>
+  <p class="prose">The fades are physical (<code>to left</code>, <code>to right</code>), because a mask gradient has no logical direction. In right-to-left text, flip them under <code>:dir(rtl)</code>. The flex alignment and padding are already logical.</p>
   <figure class="code"><figcaption><span>The style query that swaps them</span><span class="path">my-design-system · styles/components/_truncation.css</span></figcaption><pre><code class="language-css hljs"><span class="hljs-keyword">@container</span> style(<span class="hljs-attribute">--c-truncation-overflowing</span>: <span class="hljs-number">1</span>) {
   <span class="hljs-selector-class">.c-truncation__plain</span> {
     <span class="hljs-attribute">block-size</span>: <span class="hljs-number">0</span>;
@@ -188,7 +224,7 @@
   fill: currentcolor;
   <span class="hljs-attribute">inline-size</span>: <span class="hljs-number">0.75rem</span>;
 }</code></pre></figure>
-  <p class="prose">The button is <code>calc(1lh - 2 × 4px)</code> tall, so it fits inside one line of text together with its 2px ring at a 2px offset. Revealing never changes a row's height, and the ring is never clipped by the cell's <code>overflow: hidden</code>. The overflow branch reserves the same 4px as end padding.</p>
+  <p class="prose">The button is <code>calc(1lh - 2 × 4px)</code> tall, so it fits inside one line of text together with its 2px ring at a 2px offset. Revealing never changes a row's height, and the ring is never clipped by the cell's <code>overflow: hidden</code>. The overflow branch reserves the same 4px on the side where the button sits: the end by default, the start for <code>@position="start"</code>. In the middle position, a head that has shrunk away keeps the same 4px beside the button.</p>
   <figure class="code"><figcaption><span>Fallback, and the Reveal Host's native ellipsis</span><span class="path">my-design-system · styles/components/_truncation.css</span></figcaption><pre><code class="language-css hljs"><span class="hljs-comment">/* Without scroll-driven animations the value wraps, which loses nothing. */</span>
 <span class="hljs-keyword">@supports</span> <span class="hljs-keyword">not</span> ((<span class="hljs-attribute">animation-timeline</span>: --a) <span class="hljs-keyword">and</span> (<span class="hljs-attribute">timeline-scope</span>: --a)) {
   <span class="hljs-selector-class">.c-truncation__plain</span> {
@@ -205,41 +241,83 @@
   <span class="hljs-attribute">overflow</span>: hidden;
   <span class="hljs-attribute">text-overflow</span>: ellipsis;
   <span class="hljs-attribute">white-space</span>: nowrap;
+}
+
+<span class="hljs-comment">/* Native ellipsis at the start. The isolated inner span keeps a URL or path left to right. */</span>
+<span class="hljs-selector-class">.c-truncation-host--start</span> {
+  <span class="hljs-attribute">direction</span>: rtl;
+  <span class="hljs-attribute">text-align</span>: left;
+}
+
+<span class="hljs-selector-class">.c-truncation-host--start</span> &gt; <span class="hljs-selector-tag">span</span> {
+  <span class="hljs-attribute">direction</span>: ltr;
+  <span class="hljs-attribute">unicode-bidi</span>: isolate;
 }</code></pre></figure>
+  <p class="prose">A host's ellipsis is drawn by the browser at the end of the line, so the start variant makes the line right-to-left and isolates the value inside it as left-to-right. Without the inner span, <code>direction: rtl</code> alone moves punctuation such as a trailing <code>)</code> or <code>/</code> to the wrong end. <code>text-align: left</code> keeps a value that fits where it would be without the variant.</p>
 </section>
 
 <section id="component" aria-labelledby="h-component">
   <h2 id="h-component">4 · The component</h2>
   <h3>The markup for each state</h3>
-  <p class="prose"><code>&lt;Truncation&gt;</code> is a template-only component that takes one argument, <code>@text</code>. It renders the value twice. The plain copy is real text that screen readers read while it fits. The overflow copy is <code>aria-hidden</code>, so while the value is trimmed, the full value reaches assistive technology through the button's <code>aria-label</code> and its tooltip instead. The hidden plain copy is <code>visibility: hidden</code>, which takes it out of the accessibility tree, so the value is never read twice.</p>
+  <p class="prose"><code>&lt;Truncation&gt;</code> is a template-only component that takes <code>@text</code> and an optional <code>@position</code>. It renders the value twice. The plain copy is real text that screen readers read while it fits. The overflow copy is <code>aria-hidden</code>, so while the value is trimmed, the full value reaches assistive technology through the button's <code>aria-label</code> and its tooltip instead. The hidden plain copy is <code>visibility: hidden</code>, which takes it out of the accessibility tree, so the value is never read twice.</p>
   <figure class="code"><figcaption><span>components/truncation.gts (complete)</span><span class="pill lib">tippy.js option: hideOnClick</span><span class="path">my-design-system · components/truncation.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-variable constant_">TOC</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/component/template-only'</span>;
-<span class="hljs-keyword">import</span> { hash } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/helper'</span>;
+<span class="hljs-keyword">import</span> { concat, hash } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/helper'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-title class_">EllipsisDots</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'my-design-system/icons/ellipsis-dots'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-title class_">Button</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'my-design-system/components/button'</span>;
 <span class="hljs-keyword">import</span> attachTooltip <span class="hljs-keyword">from</span> <span class="hljs-string">'my-design-system/modifiers/attach-tooltip'</span>;
 
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">TruncationPosition</span> = <span class="hljs-string">'end'</span> | <span class="hljs-string">'start'</span> | <span class="hljs-string">'middle'</span>;
+
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Signature</span> {
   <span class="hljs-title class_">Args</span>: {
     <span class="hljs-attr">text</span>: <span class="hljs-built_in">string</span>;
+    <span class="hljs-comment">/** Where the cut falls while the value overflows. Defaults to `'end'`. */</span>
+    position?: <span class="hljs-title class_">TruncationPosition</span>;
   };
   <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLSpanElement</span>;
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SEPARATORS</span> = [<span class="hljs-string">'/'</span>, <span class="hljs-string">'\\'</span>, <span class="hljs-string">'›'</span>, <span class="hljs-string">'»'</span>];
+
+<span class="hljs-comment">// The faded copy, split around the Reveal Button: `head` clips at its end, `tail` at its start.</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">splitText</span>(<span class="hljs-params">text: <span class="hljs-built_in">string</span>, position: TruncationPosition = <span class="hljs-string">'end'</span></span>) {
+  <span class="hljs-keyword">if</span> (position === <span class="hljs-string">'start'</span>) <span class="hljs-keyword">return</span> { <span class="hljs-attr">head</span>: <span class="hljs-string">''</span>, <span class="hljs-attr">tail</span>: text };
+  <span class="hljs-keyword">if</span> (position === <span class="hljs-string">'end'</span>) <span class="hljs-keyword">return</span> { <span class="hljs-attr">head</span>: text, <span class="hljs-attr">tail</span>: <span class="hljs-string">''</span> };
+
+  <span class="hljs-comment">// A trailing separator doesn't count, so `/src/` keeps `/src/` rather than `/`.</span>
+  <span class="hljs-keyword">const</span> at = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(...<span class="hljs-variable constant_">SEPARATORS</span>.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">separator</span>) =&gt;</span> text.<span class="hljs-title function_">lastIndexOf</span>(separator, text.<span class="hljs-property">length</span> - <span class="hljs-number">2</span>)));
+
+  <span class="hljs-keyword">if</span> (at &gt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> { <span class="hljs-attr">head</span>: text.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, at), <span class="hljs-attr">tail</span>: text.<span class="hljs-title function_">slice</span>(at), <span class="hljs-attr">wholeTail</span>: <span class="hljs-literal">true</span> };
+
+  <span class="hljs-comment">// Between graphemes, so an emoji or accented letter is never cut in two.</span>
+  <span class="hljs-keyword">const</span> graphemes = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Intl</span>.<span class="hljs-title class_">Segmenter</span>().<span class="hljs-title function_">segment</span>(text), <span class="hljs-function">(<span class="hljs-params">{ segment }</span>) =&gt;</span> segment);
+  <span class="hljs-keyword">const</span> half = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">ceil</span>(graphemes.<span class="hljs-property">length</span> / <span class="hljs-number">2</span>);
+
+  <span class="hljs-keyword">return</span> { <span class="hljs-attr">head</span>: graphemes.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, half).<span class="hljs-title function_">join</span>(<span class="hljs-string">''</span>), <span class="hljs-attr">tail</span>: graphemes.<span class="hljs-title function_">slice</span>(half).<span class="hljs-title function_">join</span>(<span class="hljs-string">''</span>) };
 }
 
 <span class="hljs-comment">// Which branch shows is decided in CSS (`styles/components/_truncation.css`): the plain text</span>
 <span class="hljs-comment">// measures its own overflow, so there is nothing to observe, settle, or re-measure here.</span>
 <span class="hljs-keyword">const</span> <span class="hljs-title class_">TruncationComponent</span>: <span class="hljs-variable constant_">TOC</span>&lt;<span class="hljs-title class_">Signature</span>&gt; = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation'</span> <span class="hljs-attr">data-test-truncation</span> <span class="hljs-attr">...attributes</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation {{if @position (concat "c-truncation--" @position)}}'</span> <span class="hljs-attr">data-test-truncation</span> <span class="hljs-attr">...attributes</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__plain'</span> <span class="hljs-attr">data-test-truncation-plain</span>&gt;</span>{{@text}}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__overflow'</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__text'</span> <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">'true'</span> <span class="hljs-attr">data-truncation-copy</span>&gt;</span>{{@text}}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
-        <span class="hljs-attr">class</span>=<span class="hljs-string">'c-button--reset c-button--icon-only c-truncation__reveal'</span>
-        <span class="hljs-attr">aria-label</span>=<span class="hljs-string">{{@text}}</span>
-        <span class="hljs-attr">data-test-truncation-reveal</span>
-        {{<span class="hljs-attr">attachTooltip</span> (<span class="hljs-attr">hash</span> <span class="hljs-attr">content</span>=<span class="hljs-string">@text</span> <span class="hljs-attr">hideOnClick</span>=<span class="hljs-string">false)}}</span>
-      &gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">EllipsisDots</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__reveal-icon'</span> /&gt;</span>
-      <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+      {{#let (splitText @text @position) as |copy|}}
+        {{#if copy.head}}
+          <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__text'</span> <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">'true'</span> <span class="hljs-attr">data-truncation-copy</span>&gt;</span>{{copy.head}}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        {{/if}}
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+          <span class="hljs-attr">class</span>=<span class="hljs-string">'c-button--reset c-button--icon-only c-truncation__reveal'</span>
+          <span class="hljs-attr">aria-label</span>=<span class="hljs-string">{{@text}}</span>
+          <span class="hljs-attr">data-test-truncation-reveal</span>
+          {{<span class="hljs-attr">attachTooltip</span> (<span class="hljs-attr">hash</span> <span class="hljs-attr">content</span>=<span class="hljs-string">@text</span> <span class="hljs-attr">hideOnClick</span>=<span class="hljs-string">false)}}</span>
+        &gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">EllipsisDots</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__reveal-icon'</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+        {{#if copy.tail}}
+          <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-truncation__text c-truncation__text--start {{if copy.wholeTail "c-truncation__text--whole"}}'</span> <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">'true'</span> <span class="hljs-attr">data-truncation-copy</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{copy.tail}}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        {{/if}}
+      {{/let}}
     <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>;
@@ -249,6 +327,8 @@
     <li><code>hideOnClick=false</code> keeps the tooltip open when the button is clicked. There is no pinned state. The option name is tippy's, passed straight through.</li>
     <li>The button is the design system's own <code>Button</code>, so it is a tab stop exactly when it is visible. In the fits state it is <code>display: none</code> and not focusable.</li>
     <li><code>...attributes</code> lands on the wrapper, so consumers add classes and test selectors there (<code>class</code>, <code>data-test-*</code>).</li>
+    <li><code>@position</code> moves only the visible cut. <code>"start"</code> keeps the end of a breadcrumb trail like <code>Home › Projects › … › Network Migration Plan</code> in view, and <code>"middle"</code> keeps where it starts and the whole last segment, so <code>/src/components/Menu/Menu.module.css</code> becomes <code>/src/compon…/Menu.module.css</code>. It splits at the last <code>/</code>, <code>\</code>, <code>›</code>, or <code>»</code>; a value with none of these splits in half, between graphemes. The two halves together are still the whole value, and the button's accessible name doesn't change.</li>
+    <li>The middle split uses <code>Intl.Segmenter</code>, available in every current browser. The visible split never reaches assistive technology: both halves are inside the <code>aria-hidden</code> copy.</li>
   </ul>
 </section>
 
@@ -508,6 +588,7 @@
     <thead><tr><th>Host</th><th>Takes focus</th><th>Clip</th><th>Text argument</th><th>Hides for</th></tr></thead>
     <tbody>
       <tr><td>Link</td><td><code>&lt;a href&gt;</code></td><td>The link itself</td><td>The link text</td><td>Nothing</td></tr>
+      <tr><td>Shared link, cut at the start</td><td><code>&lt;a href&gt;</code></td><td>The link itself, with <code>.c-truncation-host--start</code></td><td>None: read from the clip</td><td>Nothing</td></tr>
       <tr><td>Button with an icon</td><td><code>&lt;button&gt;</code></td><td>The label span</td><td>None: read from the clip</td><td>Nothing</td></tr>
       <tr><td>File upload</td><td>The visually hidden <code>&lt;input type="file"&gt;</code></td><td>The file name in its <code>&lt;label&gt;</code></td><td>None: read from the clip</td><td>The native file picker</td></tr>
       <tr><td>Select trigger</td><td><code>&lt;button aria-haspopup="listbox"&gt;</code></td><td>The selected value span</td><td>The selected value</td><td>Its listbox (<code>aria-expanded</code>)</td></tr>
@@ -522,6 +603,15 @@
   <span class="hljs-attr">href</span>=<span class="hljs-string">'/documents/42'</span>
   </span></span><span class="hljs-template-variable">{{<span class="hljs-name">truncationHost</span> <span class="hljs-string">'Link Host with Overflowing Text'</span>}}</span><span class="language-xml"><span class="hljs-tag">
 &gt;</span>Link Host with Overflowing Text<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span></code></pre></figure>
+
+  <h4>A link cut at the start</h4>
+  <p class="prose">A URL shared in a message is recognized by its end, the file or page it points to, so <code>https://example.com/team/codepen/pen/pen.config.json</code> should read <code>…pen/pen.config.json</code>, not <code>https://example.co…</code>. Add <code>.c-truncation-host--start</code> and wrap the value in a <code>&lt;span&gt;</code>. Everything else stays the same: the link's accessible name is the full URL, and its tooltip shows the full URL only while it is clipped.</p>
+  <figure class="code"><figcaption><span>A shared link that keeps its end</span><span class="path">my-app · components/message/shared-link.gts</span></figcaption><pre><code class="language-handlebars hljs"><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span>
+  <span class="hljs-attr">class</span>=<span class="hljs-string">'c-message__link c-truncation-host c-truncation-host--start'</span>
+  <span class="hljs-attr">href</span>=</span></span><span class="hljs-template-variable">{{@url}}</span><span class="language-xml"><span class="hljs-tag">
+  </span></span><span class="hljs-template-variable">{{<span class="hljs-name">truncationHost</span>}}</span><span class="language-xml"><span class="hljs-tag">
+&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span></span><span class="hljs-template-variable">{{@url}}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span></code></pre></figure>
+  <p class="prose">The variant assumes a left-to-right value, which URLs and file paths always are. Don't use it for prose or names, which can be in either direction.</p>
 
   <h4>A button with an icon</h4>
   <p class="prose">The button's box also holds the icon, so the button itself is not the clip: its label is. Mark the label <code>data-truncation-clip</code> and leave out the text argument, and the tooltip reads the label when it shows. The icon keeps its size because the button holds it as a separate flex item with <code>flex-shrink: 0</code> (see the rules).</p>
@@ -686,6 +776,19 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
 <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">TextCell</span>;</code></pre></figure>
+  <h4>Where the cut falls</h4>
+  <p class="prose">Pick <code>@position</code> by which part of the value tells rows apart. A breadcrumb trail shown as a location value usually differs at its end, so it keeps the end with <code>"start"</code>. A file path is recognized by both its root and its file name, so it uses <code>"middle"</code>, which keeps the file name whole. Names, titles, and sentences keep the default: people read them from the start.</p>
+  <figure class="code"><figcaption><span>Location and file cells</span><span class="path">my-app · components/table/cells/location.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">const</span> <span class="hljs-title class_">LocationCell</span>: <span class="hljs-variable constant_">TOC</span>&lt;{ <span class="hljs-title class_">Args</span>: { <span class="hljs-attr">location</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">path</span>: <span class="hljs-built_in">string</span> } }&gt; = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-table__cell'</span>&gt;</span>
+    {{! Home › Projects › … › Network Migration Plan }}
+    <span class="hljs-tag">&lt;<span class="hljs-name">Truncation</span> @<span class="hljs-attr">text</span>=<span class="hljs-string">{{@location}}</span> @<span class="hljs-attr">position</span>=<span class="hljs-string">'start'</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-table__cell'</span>&gt;</span>
+    {{! /src/compon…/Menu.module.css }}
+    <span class="hljs-tag">&lt;<span class="hljs-name">Truncation</span> @<span class="hljs-attr">text</span>=<span class="hljs-string">{{@path}}</span> @<span class="hljs-attr">position</span>=<span class="hljs-string">'middle'</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span>;</code></pre></figure>
+  <p class="prose">This is for a trail shown as a value. A breadcrumb <code>&lt;nav&gt;</code> is a list of links, so each link is its own Reveal Host; a link that should keep its end uses <code>.c-truncation-host--start</code> (see <a href="#hosts">Reveal Hosts</a>).</p>
   <figure class="code"><figcaption><span>Link cell: each stacked line is its own clip inside one host</span><span class="path">my-design-system · components/table/cells/link.gts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">const</span> <span class="hljs-title class_">LinkCell</span>: <span class="hljs-variable constant_">TOC</span>&lt;{ <span class="hljs-title class_">Args</span>: { <span class="hljs-attr">href</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">lines</span>: <span class="hljs-built_in">string</span>[] } }&gt; = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-table__cell'</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'c-link'</span> <span class="hljs-attr">href</span>=<span class="hljs-string">{{@href}}</span> <span class="hljs-attr">data-test-link-cell</span> {{<span class="hljs-attr">truncationHost</span>}}&gt;</span>
@@ -792,6 +895,7 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
   <h2 id="h-tests">10 · Testing</h2>
   <h3>Waiting for the timeline, and asserting the state</h3>
   <p class="prose">The scroll timeline resolves on the animation frame after the framework has settled, so tests await two more frames. The plain copy stays laid out (zero height, hidden) while overflowing, so a visibility check can't tell the states apart. The page object asks whether the Reveal Button renders any box instead. Some test runners scale their container down (Ember's does, to 50% by default), so tests assert states and relative measurements, never absolute pixel widths. The helpers below use Ember's test helpers and page objects; the two ideas carry over to any runner.</p>
+  <p class="prose">With <code>@position="start"</code> or <code>"middle"</code>, each <code>[data-truncation-copy]</code> holds only part of the value. Assert the full value through <code>text</code> (the plain copy) or <code>reveal.ariaLabel</code>, never through the faded copies. To check where the cut falls, assert the wrapper's <code>c-truncation--start</code> or <code>c-truncation--middle</code> class rather than measuring.</p>
   <div class="two">
     <figure class="code"><figcaption><span>test-support/helpers/settle-truncation.ts</span><span class="path">my-design-system · test-support/helpers/settle-truncation.ts</span></figcaption><pre><code class="language-typescript hljs"><span class="hljs-keyword">import</span> { settled } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ember/test-helpers'</span>;
 
@@ -841,7 +945,8 @@ inputTooltip = <span class="hljs-title function_">modifier</span>(<span class="h
     <li><b>One tooltip per trigger.</b> A second source only swaps content, with a warning. If a host needs to say more, give it a <code>reason</code>; don't add a second tooltip.</li>
     <li><b>No mouse-only <code>title</code>.</b> Converting a value means removing its <code>title</code>; the reveal replaces it.</li>
     <li><b>IDs stay whole unless they are the link.</b> An ID that shares a line with its name never truncates; only the name does. A standalone ID truncates only where it is itself the link.</li>
-    <li><b>Leave room for the ring.</b> The 4px <code>--c-truncation-focus-ring</code> budget sits inside the value's space, because cells clip with no padding.</li>
+    <li><b>Leave room for the ring.</b> The 4px <code>--c-truncation-focus-ring</code> budget sits inside the value's space, because cells clip with no padding. It moves with the Reveal Button: to the start for <code>@position="start"</code>, and beside a collapsed head for <code>"middle"</code>.</li>
+    <li><b>Cut where the value differs.</b> Use <code>@position="start"</code> or <code>"middle"</code> on a <code>&lt;Truncation&gt;</code>, or <code>.c-truncation-host--start</code> on a host, only when the end of a value is what tells it apart, such as a shared URL, a breadcrumb trail, or a file path. Prose, names, and titles keep the default end cut.</li>
     <li><b>The fallback wraps.</b> Without scroll-driven animations, values wrap in full instead of truncating, so nothing is lost.</li>
     <li><b>An icon beside truncating text keeps its size.</b> An icon whose <code>&lt;svg&gt;</code> is itself a flex item next to clipped text gets <code>flex-shrink: 0</code>, or the default <code>flex-shrink: 1</code> squeezes it to a sliver. An icon inside a button or link is already held by that wrapper's minimum width. Test it by comparing the icon's width to its height with a very long value; the ratio holds under the test runner's scaling.</li>
     <li><b>A tooltip on a labeled trigger mounts beside the label.</b> Put it next to the <code>&lt;label&gt;</code>, not inside it, so a click in the tooltip doesn't activate the label's control (a file name's tooltip would otherwise reopen the file picker).</li>

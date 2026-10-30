@@ -104,6 +104,38 @@
   white-space: nowrap;
 }
 
+/* Clips at its start: an end-aligned flex item that is too wide overflows toward the start. */
+.c-truncation__text--start {
+  display: flex;
+  justify-content: flex-end;
+  mask-image: linear-gradient(to right, transparent, #000 2.5ch);
+}
+
+.c-truncation__text--start > span {
+  flex: none;
+}
+
+/* The last segment stays whole until the head is gone; past that it clips at its start. */
+.c-truncation__text--whole {
+  flex-shrink: 0;
+  mask-image: none;
+  max-inline-size: calc(100% - 1.375rem - var(--spacing-3xs) - var(--c-truncation-focus-ring));
+}
+
+/* The focus-ring budget follows the Reveal Button to wherever the cut is. */
+.c-truncation--start .c-truncation__overflow {
+  padding-inline: var(--c-truncation-focus-ring) 0;
+}
+
+.c-truncation--middle .c-truncation__overflow {
+  padding-inline-end: 0;
+}
+
+/* A collapsed head still leaves room for the Reveal Button's focus ring. */
+.c-truncation--middle .c-truncation__text:first-child {
+  min-inline-size: calc(var(--c-truncation-focus-ring) - var(--spacing-3xs));
+}
+
 @container style(--c-truncation-overflowing: 1) {
   .c-truncation__plain {
     block-size: 0;
@@ -154,6 +186,17 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Native ellipsis at the start. The isolated inner span keeps a URL or path left to right. */
+.c-truncation-host--start {
+  direction: rtl;
+  text-align: left;
+}
+
+.c-truncation-host--start > span {
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 /* ------------ Minimal design-system pieces the examples use ------------ */
@@ -373,6 +416,48 @@ a.c-title-with-id {
 .c-items-summary__count {
   color: var(--muted);
   flex: none;
+}
+
+/* Shared link in a message */
+.c-message {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-inline-size: 0;
+  padding: 10px 12px;
+}
+
+.c-message__text {
+  margin: 0;
+}
+
+.c-message__link {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent);
+  inline-size: fit-content;
+  padding: 2px 12px;
+}
+
+/* Truncation position */
+.c-position-list {
+  align-items: center;
+  display: grid;
+  gap: 8px 12px;
+  grid-template-columns: max-content minmax(0, 1fr);
+  margin: 0;
+}
+
+.c-position-list dt {
+  color: var(--muted);
+}
+
+.c-position-list dd {
+  display: flex;
+  margin: 0;
+  min-inline-size: 0;
 }
 
 /* Name label */

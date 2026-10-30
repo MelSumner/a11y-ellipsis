@@ -36,7 +36,9 @@
   <ol class="toc__list">
     <li><a href="index.html">Back to the documentation</a></li>
     <li><a href="#reveal-button">Reveal Button</a></li>
+    <li><a href="#position">Truncation position</a></li>
     <li><a href="#link-host">Link</a></li>
+    <li><a href="#shared-link">Shared link</a></li>
     <li><a href="#icon-button">Button with an icon</a></li>
     <li><a href="#file-upload">File upload</a></li>
     <li><a href="#select">Select trigger</a></li>
@@ -67,6 +69,26 @@
   </div>
 </section>
 
+<section id="position" aria-labelledby="h-position">
+  <h2 id="h-position">Truncation position</h2>
+  <p class="prose">In a breadcrumb trail shown as a value, such as a location column, the last crumb is usually the part that matters. <code>@position="start"</code> keeps the end of the trail visible, and <code>@position="middle"</code> keeps where it starts and the whole last crumb, as in <code>/src/compon…/Menu.module.css</code>. The ⋯ button sits where the cut is. Its accessible name and tooltip are still the full trail. A breadcrumb <code>&lt;nav&gt;</code> made of links is different: each link is its own Reveal Host, which can cut at the start too (see <a href="#shared-link">Shared link</a>). See <a href="index.html#component">The component</a>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-position">Truncation position frame width</label><input id="w-position" type="range" min="10" max="100" value="40" data-demo-width><output for="w-position" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <dl class="c-position-list">
+        <dt>End</dt>
+        <dd><span data-truncation>Home › Projects › Infrastructure Modernization › Phase Two › Network Migration Plan</span></dd>
+        <dt>Start</dt>
+        <dd><span data-truncation="start">Home › Projects › Infrastructure Modernization › Phase Two › Network Migration Plan</span></dd>
+        <dt>Middle</dt>
+        <dd><span data-truncation="middle">Home › Projects › Infrastructure Modernization › Phase Two › Network Migration Plan</span></dd>
+        <dt>Middle</dt>
+        <dd><span data-truncation="middle">/src/components/Menu/Menu.module.css</span></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
 <section id="link-host" aria-labelledby="h-link-host">
   <h2 id="h-link-host">Link</h2>
   <p class="prose">The link itself is the clip. It keeps the browser's own ellipsis and shows its tooltip only while its text is clipped. See <a href="index.html#hosts">Reveal Hosts</a>.</p>
@@ -74,6 +96,20 @@
     <div class="demo__width"><label for="w-link-host">Link frame width</label><input id="w-link-host" type="range" min="10" max="100" value="40" data-demo-width><output for="w-link-host" data-demo-width-output></output></div>
     <div class="demo__frame">
       <a class="c-truncation-host" href="#link-host" data-truncation-host="Link Host with Overflowing Text">Link Host with Overflowing Text</a>
+    </div>
+  </div>
+</section>
+
+<section id="shared-link" aria-labelledby="h-shared-link">
+  <h2 id="h-shared-link">Shared link, cut at the start</h2>
+  <p class="prose">A link shared in a message is recognized by its end, so it cuts at the start: <code>…pen/pen.config.json</code>. The link is the Reveal Host, so it keeps a native ellipsis, its accessible name is the full URL, and its tooltip shows the full URL while it is clipped. See <a href="index.html#hosts">Reveal Hosts</a>.</p>
+  <div class="demo">
+    <div class="demo__width"><label for="w-shared-link">Shared link frame width</label><input id="w-shared-link" type="range" min="10" max="100" value="40" data-demo-width><output for="w-shared-link" data-demo-width-output></output></div>
+    <div class="demo__frame">
+      <div class="c-message">
+        <p class="c-message__text">What about this?</p>
+        <a class="c-message__link c-truncation-host c-truncation-host--start" href="#shared-link" data-truncation-host><span>https://example.com/team/codepen/pen/pen.config.json</span></a>
+      </div>
     </div>
   </div>
 </section>

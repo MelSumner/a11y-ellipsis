@@ -252,19 +252,35 @@
     return element;
   }
 
-  // <Truncation @text> — `attributes` stands in for `...attributes` on the wrapper.
-  function Truncation(text, attributes = {}) {
+  const SEPARATORS = ['/', '\\', '›', '»'];
+
+  // The faded copy, split around the Reveal Button: `head` clips at its end, `tail` at its start.
+  function splitText(text, position = 'end') {
+    if (position === 'start') return { head: '', tail: text };
+    if (position === 'end') return { head: text, tail: '' };
+
+    // A trailing separator doesn't count, so `/src/` keeps `/src/` rather than `/`.
+    const at = Math.max(...SEPARATORS.map((separator) => text.lastIndexOf(separator, text.length - 2)));
+
+    if (at > 0) return { head: text.slice(0, at), tail: text.slice(at), wholeTail: true };
+
+    // Between graphemes, so an emoji or accented letter is never cut in two.
+    const graphemes = Array.from(new Intl.Segmenter().segment(text), ({ segment }) => segment);
+    const half = Math.ceil(graphemes.length / 2);
+
+    return { head: graphemes.slice(0, half).join(''), tail: graphemes.slice(half).join('') };
+  }
+
+  // <Truncation @text @position> — `attributes` stands in for `...attributes` on the wrapper.
+  function Truncation(text, attributes = {}, position) {
     const wrapper = el('span', { 'data-test-truncation': '', ...attributes });
 
     wrapper.classList.add('c-truncation');
+    if (position) wrapper.classList.add(`c-truncation--${position}`);
 
     const plain = el('span', { class: 'c-truncation__plain', 'data-test-truncation-plain': '' }, text);
     const overflow = el('span', { class: 'c-truncation__overflow' });
-    const copy = el(
-      'span',
-      { class: 'c-truncation__text', 'aria-hidden': 'true', 'data-truncation-copy': '' },
-      text,
-    );
+    const { head, tail, wholeTail } = splitText(text, position);
     const button = el('button', {
       type: 'button',
       class: 'c-button--reset c-button--icon-only c-truncation__reveal',
@@ -273,7 +289,26 @@
     });
 
     button.innerHTML = ELLIPSIS_DOTS;
-    overflow.append(copy, button);
+
+    if (head) {
+      overflow.append(
+        el('span', { class: 'c-truncation__text', 'aria-hidden': 'true', 'data-truncation-copy': '' }, head),
+      );
+    }
+
+    overflow.append(button);
+
+    if (tail) {
+      const copy = el('span', {
+        class: `c-truncation__text c-truncation__text--start${wholeTail ? ' c-truncation__text--whole' : ''}`,
+        'aria-hidden': 'true',
+        'data-truncation-copy': '',
+      });
+
+      copy.append(el('span', {}, tail));
+      overflow.append(copy);
+    }
+
     wrapper.append(plain, overflow);
 
     return wrapper;
@@ -294,7 +329,7 @@
     }
   }
 
-  // Replaces each `<span data-truncation>Value</span>` with a rendered <Truncation>.
+  // Replaces each `<span data-truncation[="start|middle"]>Value</span>` with a rendered <Truncation>.
   function renderTruncations(root = document) {
     for (const placeholder of root.querySelectorAll('[data-truncation]')) {
       const attributes = {};
@@ -303,7 +338,10 @@
         if (name !== 'data-truncation') attributes[name] = value;
       }
 
-      mountTruncation(placeholder, Truncation(placeholder.textContent.trim(), attributes));
+      mountTruncation(
+        placeholder,
+        Truncation(placeholder.textContent.trim(), attributes, placeholder.dataset.truncation || undefined),
+      );
     }
   }
 

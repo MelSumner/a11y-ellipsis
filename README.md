@@ -1,6 +1,8 @@
 # a11y-ellipsis
 
-Truncated text is typically not available to the keyboard only user who does not use a screen reader.
+First: this is not a library. This is documentation and live samples of a proof of concept.
+
+Truncated text is typically not available for non-interactive elements for the keyboard-only user who does not use a screen reader.
 
 This exploration hopes to resolve that.
 

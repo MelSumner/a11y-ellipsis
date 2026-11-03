@@ -62,6 +62,30 @@
   // Bounded by the viewport only; long values wrap inside it (see .tippy-box in examples.css).
   const VIEWPORT_MAX_WIDTH = 'calc(100vw - 16px)';
 
+  // WebKit can lay out `position: fixed` against a viewport offset from the one client rects are
+  // measured in, as when iOS Chrome collapses its toolbars, so a fixed tooltip lands away from its
+  // trigger. Floating UI adds the visual viewport's offset in WebKit; Popper v2, under tippy, doesn't.
+  const isWebKit = () => CSS.supports('-webkit-backdrop-filter', 'none');
+
+  // Prototype switch for comparing on a device: `?viewport-fix=off` turns the correction off.
+  const viewportFixOff = new URLSearchParams(location.search).get('viewport-fix') === 'off';
+
+  function withVisualViewportOffset(getRect) {
+    return () => {
+      const rect = getRect();
+      const viewport = window.visualViewport;
+
+      if (!viewport || !isWebKit() || viewportFixOff) return rect;
+
+      return DOMRect.fromRect({
+        x: rect.x + viewport.offsetLeft,
+        y: rect.y + viewport.offsetTop,
+        width: rect.width,
+        height: rect.height,
+      });
+    };
+  }
+
   function assert(message, condition) {
     if (!condition) throw new Error(`Assertion Failed: ${message}`);
   }
@@ -197,18 +221,22 @@
 
     if (!opts) return () => {};
 
+    const strategy = opts.popperOptions?.strategy ?? 'fixed';
     const props = {
       content: opts.content,
       placement: opts.placement || 'top',
       appendTo: opts.appendTo ?? 'parent',
-      popperOptions: { ...opts.popperOptions, strategy: opts.popperOptions?.strategy ?? 'fixed' },
+      popperOptions: { ...opts.popperOptions, strategy },
       theme: opts.theme,
       interactive: opts.interactive ?? true,
       aria: opts.aria ?? { content: 'describedby', expanded: false },
       hideOnClick: opts.hideOnClick,
       maxWidth: opts.maxWidth ?? VIEWPORT_MAX_WIDTH,
       triggerTarget: opts.triggerTarget,
-      getReferenceClientRect: opts.getReferenceClientRect,
+      getReferenceClientRect:
+        strategy === 'fixed'
+          ? withVisualViewportOffset(opts.getReferenceClientRect ?? (() => element.getBoundingClientRect()))
+          : opts.getReferenceClientRect,
       plugins: opts.showWhen === 'overflowing' ? [hideOnEscape, hideWhenExpanded] : [hideOnEscape],
       onShow:
         opts.showWhen === 'overflowing' ? showAsRevealHost(opts.content, opts.reason, opts.formatReason) : undefined,

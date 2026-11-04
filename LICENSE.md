@@ -1,6 +1,6 @@
 # License
 
-Copyright (c) 2026 Melanie Sumner Temple and Joseph Temple
+Copyright (c) 2026 Melanie Sumner Temple and Joseph Sumner Temple
 
 This repository uses two licenses:
 
@@ -10,7 +10,8 @@ This repository uses two licenses:
   You may share and adapt it for any purpose, including commercially, as long
   as you give appropriate credit, link to the license, and indicate if changes
   were made. Suggested credit: "From *a11y-ellipsis* by Melanie Sumner Temple
-  and Joseph Temple, https://github.com/MelSumner/a11y-ellipsis, CC BY 4.0."
+  and Joseph Sumner Temple, https://github.com/MelSumner/a11y-ellipsis,
+  CC BY 4.0."
 - **Code** (all JavaScript, CSS, HTML markup, and code samples, including the
   snippets shown in the written content) is licensed under the MIT License
   below.
@@ -19,7 +20,7 @@ This repository uses two licenses:
 
 ## MIT License
 
-Copyright (c) 2026 Melanie Sumner Temple and Joseph Temple
+Copyright (c) 2026 Melanie Sumner Temple and Joseph Sumner Temple
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
